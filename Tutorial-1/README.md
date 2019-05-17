@@ -27,6 +27,26 @@ When creating the index, we have to define the schema, documents, etc. They have
 
 Mapping is like schema, Post is like table, types-mappings-schemas.jpg
 
+In order to create Index:
+```
+PUT <index_name>
+{
+    "mappings": {
+    
+        "properties": {
+                "field1": {"type":"text"},
+                "field2": {"type" : "integer"}
+            }
+    }
+}
 
+```
+
+To search all documents in the index:
+```
+GET employees_details/_search
+```
+
+If want to update a document, we just PUT it again, it immutable. The way the update works, is by deleting the old and making the new document.
 
 

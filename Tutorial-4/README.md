@@ -274,3 +274,90 @@ GET kibana_sample_data_ecommerce/_search
 ```
 We don't use __term__ for query for text fields. We use them for keywords. 
 
+__Range in Query:__
+
+We can define a range and have the results that fall into the range. here is an example:
+```
+GET employees_details/_search
+{
+  "query": 
+  {
+    "range": {
+      "age": {
+        "gt": 1,
+        "lte": 41
+      }
+    }  
+  }
+}   // returns the values where the age s greater than 1 and less than or equals 41
+```
+We can also use it for date range:
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "range": {
+      "order_date": {
+        "gte": "2018-06-03",
+        "lte": "2019-06-03"
+      }
+    }
+  }
+}
+```
+Here is how to use __prefix__ to search for values:
+```
+GET employees_details/_search
+{
+  "query": {
+    "prefix": {
+      "EmpName": "ar"
+    }
+  }
+}  //it returns any name starting with 'ar'  (((IMPORTANT: if you wrtie Ar it doesn't work though the real names are uppercase.)))
+```
+We can use wildcard to tell exactly what string we are looking for, which is something like regex. Example:
+```
+GET employees_details/_search
+{
+  "query": {
+    "wildcard": {
+      "EmpName": {
+        "value": "an*a"
+      }
+    }
+  }
+}   // returns the one with name Anna
+```
+Better to avoid wildcard for typical queries because it iterates through all records and will take longer.
+
+__Bool Query:__ 
+
+It contains must, should, filter, etc. Here is an example:
+```
+GET /index_name/_search
+{
+  "query": {
+    "bool" : {
+      "must" : {
+        "term" : { "user" : "kimchy" }
+      },
+      "filter": {
+        "term" : { "tag" : "tech" }
+      },
+      "must_not" : {
+        "range" : {
+          "age" : { "gte" : 10, "lte" : 20 }
+        }
+      },
+      "should" : [
+        { "term" : { "tag" : "wow" } },
+        { "term" : { "tag" : "elasticsearch" } }
+      ],
+      "minimum_should_match" : 1,
+      "boost" : 1.0
+    }
+  }
+}
+```
+
